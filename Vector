@@ -1,0 +1,85 @@
+public class Vector2d {
+    double xPos;
+    double yPos;
+      public Vector2d(double xPos,double yPos){
+          this.xPos = xPos;
+          this.yPos = yPos;
+      }
+    public double betrag(Vector2d vector1) {
+        double geschwindigkeit = Math.sqrt((vector1.xPos * vector1.xPos) + (vector1.yPos * vector1.yPos));
+        return geschwindigkeit;
+    }
+    public void add(Vector2d vector2){
+          xPos += vector2.xPos;
+          yPos += vector2.yPos;
+    }
+    public Vector2d normalVector(Vector2d vector1, Vector2d vector2){
+          double distancePosx;
+          double distancePosy;
+          distancePosx = vector1.xPos - vector2.xPos;
+          distancePosy = vector1.yPos - vector2.yPos;
+        return new Vector2d(distancePosx,distancePosy);
+    }
+    public Vector2d unitVector(Vector2d vector1){
+        double unitvectorxPos;
+        double unitvectoryPos;
+        unitvectorxPos = vector1.xPos / betrag(vector1);
+        unitvectoryPos = vector1.yPos / betrag(vector1);
+          return new Vector2d(unitvectorxPos, unitvectoryPos);
+    }
+    public Vector2d unitTangentVector(Vector2d unitVector){
+          double uTanx;
+          double uTany;
+          uTanx = unitVector.yPos *= -1;
+          uTany = unitVector.xPos;
+          return new Vector2d(uTanx,uTany);
+    }
+    public double normalVelocity(FlyingObject object1, Vector2d vector1, Vector2d vector2){
+        Vector2d unitNormalVector = unitVector(normalVector(vector1,vector2));
+        double nvx;
+        double nvy;
+        double nv;
+        nvx = unitNormalVector.xPos * object1.velocityVector.xPos;
+        nvy = unitNormalVector.yPos * object1.velocityVector.yPos;
+        nv = nvx + nvy;
+          return nv;
+    }
+    public double tangentialVelocity(FlyingObject object1, Vector2d vector1, Vector2d vector2){
+        Vector2d unitTangentVector = unitTangentVector(unitVector(normalVector(vector1,vector2)));
+        double tvx;
+        double tvy;
+        double tv;
+        tvx = unitTangentVector.xPos * object1.velocityVector.xPos;
+        tvy = unitTangentVector.yPos * object1.velocityVector.yPos;
+        tv = tvx + tvy;
+        return tv;
+    }
+    public Vector2d normalVelocityafterCollision(FlyingObject object1, FlyingObject object2, Vector2d vector1, Vector2d vector2){
+          double nvac;
+          double nvacx;
+          double nvacy;
+          nvac = (normalVelocity(object1, vector1, vector2) * (object1.weight - object2.weight) + 2 * object2.weight * normalVelocity(object2, vector2, vector1)) / object1.weight + object2.weight;
+          nvacx = unitVector(normalVector(vector1,vector2)).xPos * nvac;
+          nvacy = unitVector(normalVector(vector1,vector2)).yPos * nvac;
+          return new Vector2d(nvacx, nvacy);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* public double velocityaftercollision(double xSpeed, double ySpeed, double weight, double xSpeed2, double ySpeed2, double weight2){
+        double velocity1d=(betrag(xSpeed,ySpeed) * (weight - weight2) + 2 * weight2 * betrag(xSpeed2,ySpeed2)) / (weight + weight2);
+        return velocity1d;
+        // einmal für beide kreise durchführen
+    }*/
+
+}
