@@ -1,0 +1,101 @@
+import java.awt.*;
+
+public class FlyingObject {
+    public Vector2d originVector;
+    public Vector2d velocityVector;
+    public double xStart;
+    public double yStart;
+    public double xSpeed;
+    public double ySpeed;
+    public int size;
+    public Color rgb;
+    public int teamselect;
+    public int weight;
+    public FlyingObject(double xStart, double yStart, double xSpeed, double ySpeed,int size, Color rgb, int teamselect, int weight) {
+        this.originVector = new Vector2d(xStart,yStart);
+        this.velocityVector = new Vector2d(xSpeed, ySpeed);
+        this.xStart = xStart;
+        this.yStart = yStart;
+        this.xSpeed = xSpeed;
+        this.ySpeed = ySpeed;
+        this.size = size;
+        this.rgb = rgb;
+        this.teamselect = teamselect;
+        this.weight = weight;
+
+        if (teamselect == 1){
+            this.rgb = Color.red;
+        }
+        if (teamselect == 2){
+            this.rgb = Color.blue;
+        }
+        if (teamselect == 3){
+            this.rgb = Color.green;
+        }
+    }
+
+    public void nextIt(int boundFieldWidth, int boundFieldHeight){
+        if(xStart >= boundFieldWidth) {
+            xStart = 1-size;
+        }
+        if(yStart >= boundFieldHeight) {
+            yStart = -size;
+        }
+        if(xStart + size <= 0) {
+            xStart = boundFieldWidth -1;
+        }
+        if(yStart + size<= -size-1) {
+            yStart = boundFieldHeight -1;
+        }
+        xStart += xSpeed;
+        yStart += ySpeed;
+    }
+        public void draw(Graphics2D g2d){
+        g2d.setColor(rgb);
+        g2d.fillOval((int) xStart,(int) yStart,size, size);
+        /*  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!typecasting!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        double test = 10.123123;
+        int test2 = (int) test;
+            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+    }
+   public void rps (FlyingObject object){
+        if (teamselect == 1 && object.teamselect == 2){
+            object.teamselect = 1;
+            object.rgb = Color.red;
+        } else if (teamselect == 2 && object.teamselect == 3) {
+            object.teamselect = 2;
+            object.rgb = Color.blue;
+        } else if (teamselect == 3 && object.teamselect == 1) {
+            object.teamselect =3;
+            object.rgb = Color.green;
+        }
+        else if (teamselect == 1 && object.teamselect == 3){
+            teamselect = 3;
+            rgb = Color.green;
+        } else if (teamselect == 2 && object.teamselect == 1) {
+            teamselect = 1;
+            object.rgb = Color.red;
+        } else if (teamselect == 3 && object.teamselect == 2) {
+            teamselect =2;
+            object.rgb = Color.blue;
+        }
+    }
+    public boolean collid(FlyingObject object){
+        if(object == null || object == this){
+            return false;
+        }
+        double distance = distance(object);
+        return distance <= (size / 2.) + (object.size / 2.);
+    }
+    public double distance(FlyingObject object) {
+        double xDif = (xStart+ (size / 2.)) - (object.xStart+ (object.size / 2.));
+        double yDif = (yStart+(size / 2.)) - (object.yStart+ (object.size / 2.));
+        double distancesquared = xDif * xDif + yDif * yDif;
+        return Math.sqrt(distancesquared);
+    }
+    public void reverseSpeed(){
+            xSpeed *= -1;
+            ySpeed *= -1;
+           // size -= 1;
+    }
+}
