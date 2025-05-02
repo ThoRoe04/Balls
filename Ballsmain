@@ -1,0 +1,124 @@
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Random;
+
+public class JFrame0 extends JFrame {
+    private static final int FRAME_WIDTH = 1600;
+    private static final int FRAME_HEIGHT = 1000;
+    private static final int spielfeldwidth = 600;
+    private static final int spielfeldheight = 600;
+    static int name = 1;
+    static FlyingObject[] objects = new FlyingObject[100];
+
+
+    public static void main(String[] args) throws InterruptedException {
+        JFrame0 f = new JFrame0();
+        for(int i = 0; i<Integer.MAX_VALUE; i++) {
+            Thread.sleep(20);
+           f.spielfeld.repaint();
+        }
+    }
+
+    private JPanel spielfeld;
+    public JFrame0() {;
+        objects[0] = new FlyingObject(1,1,10,7,40,Color.black, 3, 75);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        JPanel contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPane.setLayout(new BorderLayout());
+        setContentPane(contentPane);
+        contentPane.setPreferredSize(new Dimension(100,100));
+        spielfeld = new JPanel(){
+            @Override
+            public void paint(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.clearRect(0,0,this.getWidth(), this.getHeight());
+                for (int i = 0; i < name; i++) {
+                    objects[i].nextIt(getWidth(), getHeight());
+                    for (int j = 0; j < name; j++) {
+                        if (objects[i].collid(objects[j])) {
+                            objects[i].rps(objects[j]);
+                            objects[i].reverseSpeed();
+                            objects[j].reverseSpeed();
+                        }
+                    }
+                    objects[i].draw(g2d);
+                }
+            }
+        };
+        spielfeld.setPreferredSize(new Dimension(spielfeldwidth, spielfeldheight));
+        contentPane.add(spielfeld,BorderLayout.CENTER);
+        JPanel pnlSteuerung = new JPanel();
+        contentPane.add(pnlSteuerung,BorderLayout.EAST);
+        pnlSteuerung.setLayout(new BoxLayout(pnlSteuerung,BoxLayout.PAGE_AXIS));
+        JButton btnrechts = new JButton("<--");
+        btnrechts.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                objects[name-1].xSpeed-=2;
+            }
+        });
+        pnlSteuerung.add(btnrechts);
+        JButton btnlinks = new JButton("-->");
+        btnlinks.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                objects[name-1].xSpeed +=2;
+            }
+        });
+        pnlSteuerung.add(btnlinks);
+        JButton btnplus = new JButton("+");
+        btnplus.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                objects[name-1].size +=10;
+            }
+        });
+        pnlSteuerung.add(btnplus);
+        JButton btnminus = new JButton("-");
+        btnminus.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                objects[name-1].size -=10;
+            }
+        });
+        pnlSteuerung.add(btnminus);
+        JButton btnrotation = new JButton("Rotation counterclockwise");
+        btnrotation.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                objects[name-1].ySpeed-=2;
+            }
+        });
+        pnlSteuerung.add(btnrotation);
+        JButton btnrotation2 = new JButton("Rotation clockwise");
+        btnrotation2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                objects[name-1].ySpeed+=2;
+            }
+        });
+        pnlSteuerung.add(btnrotation2);
+        JButton addball = new JButton("Add new ball");
+        addball.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                Random random = new Random();
+                int xStart = random.nextInt(1,spielfeldwidth);
+                int yStart = random.nextInt(1,spielfeldheight);
+                int xSpeed = random.nextInt(1,15);
+                int ySpeed = random.nextInt(1,15);
+                int size = random.nextInt(10,500);
+                Color rgb = new Color(random.nextInt(1,255),random.nextInt(1,255),random.nextInt(1,255));
+                int teamselect = random.nextInt(1,4);
+                int weight = random.nextInt(1,100);
+                objects[name]= new FlyingObject(xStart,yStart,xSpeed,ySpeed,size,rgb,teamselect,weight);
+                System.out.println(objects[name].teamselect);
+                name +=1;
+            }
+        });
+        pnlSteuerung.add(addball);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setTitle("Mona Lisa des Coding");
+        setBackground(Color.white);
+    }
+}
+
