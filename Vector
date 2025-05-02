@@ -54,16 +54,31 @@ public class Vector2d {
         tv = tvx + tvy;
         return tv;
     }
-    public Vector2d normalVelocityafterCollision(FlyingObject object1, FlyingObject object2, Vector2d vector1, Vector2d vector2){
+    public Vector2d normalVelocityVectorafterCollision(FlyingObject object1, FlyingObject object2, Vector2d vector1, Vector2d vector2){
           double nvac;
-          double nvacx;
-          double nvacy;
+          double nvvacx;
+          double nvvacy;
           nvac = (normalVelocity(object1, vector1, vector2) * (object1.weight - object2.weight) + 2 * object2.weight * normalVelocity(object2, vector2, vector1)) / object1.weight + object2.weight;
-          nvacx = unitVector(normalVector(vector1,vector2)).xPos * nvac;
-          nvacy = unitVector(normalVector(vector1,vector2)).yPos * nvac;
-          return new Vector2d(nvacx, nvacy);
+          nvvacx = unitVector(normalVector(vector1,vector2)).xPos * nvac;
+          nvvacy = unitVector(normalVector(vector1,vector2)).yPos * nvac;
+          return new Vector2d(nvvacx, nvvacy);
     }
 
+    public Vector2d tangentialVelocityVectorafterCollision(FlyingObject object1, FlyingObject object2, Vector2d vector1, Vector2d vector2){
+        double tvvacx;
+        double tvvacy;
+        tvvacx = unitTangentVector(unitVector(normalVector(vector1,vector2))).xPos * tangentialVelocity(object1,vector1,vector2);
+        tvvacy = unitTangentVector(unitVector(normalVector(vector1,vector2))).yPos * tangentialVelocity(object1,vector1,vector2);
+        return new Vector2d(tvvacx, tvvacy);
+    }
+    public Vector2d velocityVectorafterCollision(FlyingObject object1, FlyingObject object2, Vector2d vector1, Vector2d vector2){
+     double vacx;
+     double vacy;
+     vacx = normalVelocityVectorafterCollision(object1, object2, vector1, vector2).xPos + tangentialVelocityVectorafterCollision(object1,object2,vector1,vector2).xPos;
+     vacy = normalVelocityVectorafterCollision(object1, object2, vector1, vector2).yPos + tangentialVelocityVectorafterCollision(object1,object2,vector1,vector2).yPos;
+     return new Vector2d(vacx,vacy);
+    }
+// https://vobarian.com/collisions/2dcollisions2.pdf
 
 
 
